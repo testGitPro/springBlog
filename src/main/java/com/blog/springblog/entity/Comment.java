@@ -18,8 +18,7 @@ public class Comment {
     private long id;
     private String text;
     private LocalDateTime creationDate;
-
-
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
