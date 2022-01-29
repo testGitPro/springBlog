@@ -1,5 +1,7 @@
 package com.blog.springblog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,8 +17,13 @@ import java.util.List;
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @SequenceGenerator(name = "post_sequence",
+            sequenceName = "post_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "post_sequence")
+    private Long postId;
+
     @NotBlank(message = "Please add title")
     private String title;
 
@@ -27,7 +34,12 @@ public class Post {
     @Column(columnDefinition = "boolean default false")
     private boolean star;
 
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "comment_id", referencedColumnName = "id")
-    private List<Comment> comment;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post", referencedColumnName = "postId")
+
+
+
+    @Transient
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Comment> comments;
 }
